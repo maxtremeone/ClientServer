@@ -2,7 +2,7 @@
 
 namespace API.Contracts
 {
-    public interface IEducationRepository : IGeneralRepository<University>
+    public interface IEducationRepository : IGeneralRepository<Education>
     {
     }
 
