@@ -1,10 +1,19 @@
-﻿namespace API.Models;
-public class Room 
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace API.Models
 {
-    public Guid Guid { get; set; }
-    public string Name { get; set; }
-    public int Floor { get; set; }
-    public int Capacity { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public DateTime ModifiedDate { get; set;}
+    [Table("tb_m_rooms")]
+    public class Room : BaseEntity
+    {
+        [Column("name", TypeName = "nvarchar(100)")]
+        public string Name { get; set; }
+        [Column("floor")]
+        public int Floor { get; set; }
+        [Column("capacity")]
+        public int Capacity { get; set; }
+
+        //Cardinality
+        public ICollection<Booking>? Bookings { get; set; }
+    }
 }
