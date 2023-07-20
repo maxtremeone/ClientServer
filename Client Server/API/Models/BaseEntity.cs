@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
         [Key]
         [Column("guid")]
         public Guid Guid { get; set; }
-        [Column("created_date")] //jika ingin mengubah kolom
+        [Column("created_date")]
         public DateTime CreatedDate { get; set; }
         [Column("modified_date")]
-        public DateTime ModifiedDate { get; set;}
+        public DateTime ModifiedDate { get; set; }
     }
 }
