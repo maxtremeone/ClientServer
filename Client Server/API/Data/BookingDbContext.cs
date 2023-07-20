@@ -88,9 +88,6 @@ namespace API.Data
                         .WithMany(r => r.AccountRoles)
                         .HasForeignKey(ar => ar.Guid);
 
-
-
-
         }
 
     }

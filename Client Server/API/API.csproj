@@ -17,12 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="DTOs\" />
     <Folder Include="Data\" />
-    <Folder Include="Contracts\" />
     <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
 
