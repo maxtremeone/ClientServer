@@ -32,61 +32,47 @@ namespace API.Data
                             e.PhoneNumber
                         }).IsUnique();
 
-            //Many Education with One University (N:1)
-            modelBuilder.Entity<Education>() //Education memiliki Foreign Key
-                        .HasOne(e => e.University)
-                        .WithMany(u => u.Educations)
-                        .HasForeignKey(e => e.UniversityGuid);
+            // University - Education (One to Many)
+            modelBuilder.Entity<University>()
+                          .HasMany(u => u.Educations)
+                          .WithOne(e => e.University)
+                          .HasForeignKey(e => e.UniversityGuid);
 
-
-            //one University with many education (1:N)
-            //modelBuilder.Entity<University>()
-            //            .HasMany(u => u.Educations)
-            //            .WithOne(e => e.University)
-            //            .HasForeignKey(e => e.UniversityGuid); //Pake salah satu aja
-
-            //one Education with One Employees
-            modelBuilder.Entity<Employee>()
-                        .HasOne(emp => emp.Education)
-                        .WithOne(e => e.Employee)
-                        .HasForeignKey<Education>(emp => emp.Guid);
-
-            //modelBuilder.Entity<Education>()
-            //    .HasOne(e => e.Employee)
-            //    .WithOne(e => e.Education)
-            //    .HasForeignKey<Education>(e => e.Guid);
-
-
-            //Many Booking with one Employee
-            modelBuilder.Entity<Booking>()
-                        .HasOne(b => b.Employee)
-                        .WithMany(emp => emp.Bookings)
-                        .HasForeignKey(b => b.EmployeeGuid);
-                     
-
-            //Many Booking with one room
-            modelBuilder.Entity<Booking>()
-                        .HasOne(b => b.Room)
-                        .WithMany(r => r.Bookings)
+            // Room - Booking (One to Many)
+            modelBuilder.Entity<Room>()
+                        .HasMany(r => r.Bookings)
+                        .WithOne(b => b.Room)
                         .HasForeignKey(b => b.RoomGuid);
 
-            //One Employee to One Account
+            // Employee - Booking (One to Many)
+            modelBuilder.Entity<Employee>()
+                        .HasMany(emp => emp.Bookings)
+                        .WithOne(b => b.Employee)
+                        .HasForeignKey(b => b.EmployeeGuid);
+
+            // Role - AccountRole (One to Many)
+            modelBuilder.Entity<Role>()
+                        .HasMany(r => r.AccountRoles)
+                        .WithOne(ar => ar.Role)
+                        .HasForeignKey(ar => ar.RoleGuid);
+
+            // Account - AccountRole (One to Many)
             modelBuilder.Entity<Account>()
-                        .HasOne(a => a.Employee)
-                        .WithOne(emp => emp.Account)
-                        .HasForeignKey<Employee>(emp => emp.Guid);
+                        .HasMany(a => a.AccountRoles)
+                        .WithOne(ar => ar.Account)
+                        .HasForeignKey(ar => ar.AccountGuid);
 
-            //many account role to one account
-            modelBuilder.Entity<AccountRole>()
-                        .HasOne(ar => ar.Account)
-                        .WithMany(a => a.AccountRoles)
-                        .HasForeignKey(ar => ar.Guid);
+            // Education - Employee (One to One)
+            modelBuilder.Entity<Education>()
+                        .HasOne(e => e.Employee)
+                        .WithOne(emp => emp.Education)
+                        .HasForeignKey<Education>(e => e.Guid);
 
-            //Many account role to one role
-            modelBuilder.Entity<AccountRole>()
-                        .HasOne(ar => ar.Role)
-                        .WithMany(r => r.AccountRoles)
-                        .HasForeignKey(ar => ar.Guid);
+            // Account - Employee (One to One)
+            modelBuilder.Entity<Account>()
+                       .HasOne(a => a.Employee)
+                       .WithOne(emp => emp.Account)
+                       .HasForeignKey<Account>(a => a.Guid);
 
         }
 
