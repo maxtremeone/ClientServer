@@ -2,6 +2,7 @@ using API.Contracts;
 using API.Data;
 using API.Models;
 using API.Repositories;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,17 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+// Add services to the container.
+builder.Services.AddScoped<AccountRoleService>();
+builder.Services.AddScoped<UniversityService>();
+builder.Services.AddScoped<EducationService>();
+builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<RoomService>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
