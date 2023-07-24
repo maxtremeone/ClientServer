@@ -67,6 +67,7 @@ namespace API.Data
                         .HasOne(e => e.Employee)
                         .WithOne(emp => emp.Education)
                         .HasForeignKey<Education>(e => e.Guid);
+                        //.OnDelete(DeleteBehavior.Restrict);
 
             // Account - Employee (One to One)
             modelBuilder.Entity<Account>()
