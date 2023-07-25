@@ -13,7 +13,7 @@ namespace API.Utilities.Validations.Bookings
 
             RuleFor(b => b.StartDate)
                 .NotEmpty()
-                .GreaterThanOrEqualTo(DateTime.Now.AddHours(5));
+                .GreaterThanOrEqualTo(DateTime.Now.AddDays(1)).WithMessage("");
 
             RuleFor(b => b.EndDate)
                .NotEmpty();
