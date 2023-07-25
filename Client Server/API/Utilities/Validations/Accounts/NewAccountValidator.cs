@@ -7,6 +7,7 @@ namespace API.Utilities.Validations.Accounts
     public class NewAccountValidator : AbstractValidator<NewAccountDto> //diisi DTO karena semua request masuk DTO
     {
         private readonly IAccountRepository _accountRepository;
+        
         public NewAccountValidator(IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository;

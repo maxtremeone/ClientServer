@@ -35,19 +35,19 @@ namespace API.Utilities.Validations.Employees
 
             RuleFor(e => e.Email)
                 .NotEmpty().WithMessage("Email is required")
-                .EmailAddress().WithMessage("Email is not valid");
-            //    .Must(IsDuplicateValue).WithMessage("Email already exist");
+                .EmailAddress().WithMessage("Email is not valid")
+                .Must(IsDuplicateValue).WithMessage("Email already exist");
 
             RuleFor(e => e.Phone_Number)
                 .NotEmpty()
                 .MaximumLength(20)
-                .Matches(@"^\+[0-9]").WithMessage("Phone number must start with +");
-            //    .Must(IsDuplicateValue).WithMessage("Phone number already exist");
+                .Matches(@"^\+[0-9]").WithMessage("Phone number must start with +")
+                .Must(IsDuplicateValue).WithMessage("Phone number already exist");
         }
 
-        //private bool IsDuplicateValue(string arg)
-        //{
-        //    return _employeeRepository.IsNotExist(arg);
-        //}
+        private bool IsDuplicateValue(string arg)
+        {
+            return _employeeRepository.IsNotExist(arg);
+        }
     }
 }

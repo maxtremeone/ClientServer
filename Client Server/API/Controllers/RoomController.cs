@@ -1,8 +1,10 @@
-﻿using API.Services;
+﻿using API.DTOs.Rooms;
 using API.Models;
-using API.Repositories;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
-using API.DTOs.Rooms;
+using System.Net;
+using API.Utilities.Handlers;
+using System.Collections;
 
 namespace API.Controllers
 {
@@ -23,10 +25,21 @@ namespace API.Controllers
             var result = _roomService.GetAll();
             if (!result.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<IEnumerable<RoomDto>>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Guid is Not Found"
+                });
             }
 
-            return Ok(result);
+            return Ok(new ResponseHandler<IEnumerable<RoomDto>>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success retrieve data",
+                Data = result
+            });
         }
 
         [HttpGet("{guid}")]
@@ -35,10 +48,21 @@ namespace API.Controllers
             var result = _roomService.GetByGuid(guid);
             if (result is null)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<RoomDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Guid is Not Found"
+                });
             }
 
-            return Ok(result);
+            return Ok(new ResponseHandler<RoomDto>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success retrieve data",
+                Data = result
+            });
         }
 
         [HttpPost]
@@ -47,10 +71,21 @@ namespace API.Controllers
             var result = _roomService.Create(newRoomDto);
             if (result is null)
             {
-                return StatusCode(500, "Error Retrieve from database");
+                return StatusCode(500, new ResponseHandler<NewRoomDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Error Retrieve from database"
+                });
             }
 
-            return Ok(result);
+            return Ok(new ResponseHandler<NewRoomDto>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success Post Data",
+                Data = newRoomDto
+            });
         }
 
         [HttpPut]
@@ -60,32 +95,63 @@ namespace API.Controllers
 
             if (result is -1)
             {
-                return NotFound("Guid is not found");
+                return NotFound(new ResponseHandler<RoomDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Guid is Not Found"
+                });
             }
 
             if (result is 0)
             {
-                return StatusCode(500, "Error Retrieve from database");
+                return StatusCode(500, new ResponseHandler<RoomDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Error Retrieve from database"
+                });
             }
 
-            return Ok("Update success");
+            return Ok(new ResponseHandler<RoomDto>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Update Succes",
+                Data = roomDto
+            });
         }
 
         [HttpDelete]
         public IActionResult Delete(Guid guid)
-        {
-            var result = _roomService.Delete(guid);
-            if (result is -1)
             {
-                return NotFound("Guid is not found");
-            }
+                var result = _roomService.Delete(guid);
+                if (result is -1)
+                {
+                    return NotFound(new ResponseHandler<RoomDto> 
+                    {
+                        Code = StatusCodes.Status404NotFound,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "Guid is Not Found"
+                    });
+                }
 
-            if (result is 0)
-            {
-                return StatusCode(500, "Error Retrieve from database");
-            }
+                if (result is 0)
+                {
+                    return StatusCode(500, new ResponseHandler<RoomDto>
+                        {
+                        Code = StatusCodes.Status500InternalServerError,
+                        Status = HttpStatusCode.NotFound.ToString(),
+                        Message = "Error Retrieve from Database"
+                        });
+                }
 
-            return Ok("Delete success");
+                return Ok(new ResponseHandler<RoomDto>()
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = HttpStatusCode.OK.ToString(),
+                    Message = "Delete Success"
+                });
+            }
         }
     }
-}
