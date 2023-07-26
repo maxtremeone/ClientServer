@@ -16,6 +16,12 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
                        || e.PhoneNumber.Contains(value)) is null;
     }
 
+    //public bool IsNotExist(string value)
+    //{
+    //    return _context.Set<Employee>()
+    //                   .SingleOrDefault(e => e.Email == value || e.PhoneNumber == value) == null;
+    //}
+
     public string? GetLastNik()
     {
         return _context.Set<Employee>().ToList().LastOrDefault()?.Nik;
@@ -25,4 +31,5 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
     {
         return _context.Set<Employee>().SingleOrDefault(e => e.Email.Contains(email));
     }
+
 }

@@ -178,5 +178,42 @@ namespace API.Controllers
                 Message = "Login Success"
             });
         }
+
+        [HttpPost("register")]
+        public IActionResult Register(RegisterDto registerDto)
+        {
+            int result = _accountService.Register(registerDto);
+
+            if (result == 0)
+            {
+                // Jika pendaftaran gagal, kirim respons dengan status 400 Bad Request
+                return BadRequest(new ResponseHandler<RegisterDto>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Email or PhoneNumber is already registered."
+                });
+            }
+            else if (result == 1)
+            {
+                // Jika pendaftaran berhasil, kirim respons dengan status 200 OK
+                return Ok(new ResponseHandler<RegisterDto>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Status = HttpStatusCode.OK.ToString(),
+                    Message = "Registration Success."
+                });
+            }
+            else
+            {
+                // Jika terjadi kesalahan lain, kirim respons dengan status 500 Internal Server Error
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<RegisterDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Error retrieve from database."
+                });
+            }
+        }
     }
 }
