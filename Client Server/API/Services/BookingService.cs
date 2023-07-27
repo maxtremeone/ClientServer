@@ -90,82 +90,37 @@ namespace API.Services
                 : 0; // booking failed to delete;
         }
 
-        public IEnumerable<DetailBookingDto> GetALlDetailBooking()
+        public IEnumerable<DetailBookingDto> GetAllDetailBooking()
         {
-            var resultBooking = _bookingRepository.GetAll();
-            if (!resultBooking.Any())
+            var getBookingsDetail = (from b in _bookingRepository.GetAll()
+                                     join e in _employeeRepository.GetAll() on b.EmployeeGuid equals e.Guid
+                                     join r in _roomRepository.GetAll() on b.RoomGuid equals r.Guid
+                                     select new DetailBookingDto
+                                     {
+                                         BookingGuid = b.Guid,
+                                         BookedNik = e.Nik,
+                                         BookedBy = e.FirstName + " " + e.LastName,
+                                         RoomName = r.Name,
+                                         StartDate = b.StartDate,
+                                         EndDate = b.EndDate,
+                                         StatusLevel = b.Status,
+                                         Remarks = b.Remarks
+                                     });
+            if (!getBookingsDetail.Any() || getBookingsDetail is null)
             {
                 return Enumerable.Empty<DetailBookingDto>();
             }
 
-            var detailDtos = new List<DetailBookingDto>();
-            foreach (var result in resultBooking)
-            {
-                var resultEmployee = _employeeRepository.GetByGuid(result.EmployeeGuid);
-                if (resultEmployee is null)
-                {
-                    return Enumerable.Empty<DetailBookingDto>();
-                }
-
-                var resultRoom = _roomRepository.GetByGuid(result.RoomGuid);
-                if (resultRoom is null)
-                {
-                    return Enumerable.Empty<DetailBookingDto>();
-                }
-
-                var bookingDto = new DetailBookingDto
-                {
-                    BookingGuid = result.Guid,
-                    BookedNik = resultEmployee.Nik,
-                    BookedBy = resultEmployee.FirstName + " " + resultEmployee.LastName,
-                    RoomName = resultRoom.Name,
-                    StartDate = result.StartDate,
-                    EndDate = result.EndDate,
-                    StatusLevel = result.Status,
-                    Remarks = result.Remarks
-                };
-
-                detailDtos.Add(bookingDto);
-
-            }
-
-            return detailDtos;
+            return getBookingsDetail; // booking is found;
         }
 
-        public DetailBookingDto? GetDetailBookingByGuid(Guid guid) 
-        { 
-            var Booking = _bookingRepository.GetByGuid(guid);
-            if (Booking is null)
-            { 
-                return null;
-            }
-            
-            var Employee = _employeeRepository.GetByGuid(Booking.EmployeeGuid);
-            if(Employee is null)
-            { 
-                return null;
-            }
 
-            var Room = _roomRepository.GetByGuid(Booking.RoomGuid);
-            if (Room is null )
-            {
-                return null;
-            }
-
-            var bookingDto = new DetailBookingDto
-            {
-                BookingGuid = Booking.Guid,
-                BookedNik = Employee.Nik,
-                BookedBy = Employee.FirstName + " " + Employee.LastName,
-                RoomName = Room.Name,
-                StartDate = Booking.StartDate,
-                EndDate = Booking.EndDate,
-                StatusLevel = Booking.Status,
-                Remarks = Booking.Remarks
-
-            };
-            return bookingDto;
+        public DetailBookingDto? GetDetailBookingByGuid(Guid guid)
+        {
+            var allBookings = GetAllDetailBooking();
+            return allBookings.FirstOrDefault(b => b.BookingGuid == guid);
         }
+
 
         public IEnumerable<RoomDto> FreeRoomToday()
         {

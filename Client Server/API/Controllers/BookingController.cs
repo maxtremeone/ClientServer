@@ -157,10 +157,10 @@ namespace API.Controllers
             });
         }
 
-        [HttpGet("detailBooking")]
+        [HttpGet("detail")]
         public IActionResult GetAllDetail()
         {
-            var result = _bookingService.GetALlDetailBooking();
+            var result = _bookingService.GetAllDetailBooking();
             if (!result.Any())
             {
                 return NotFound(new ResponseHandler<BookingDto>
@@ -180,7 +180,7 @@ namespace API.Controllers
             });
         }
 
-        [HttpPost("detaiBooking/{guid}")]
+        [HttpPost("detail/{guid}")]
         public IActionResult GetDetailByGuid(Guid guid)
         {
             var result = _bookingService.GetDetailBookingByGuid(guid);
@@ -227,7 +227,7 @@ namespace API.Controllers
                 });
         }
 
-        [HttpGet("booking-length")]
+        [HttpGet("length")]
         public IActionResult BookingLength()
         {
             var result = _bookingService.BookingLength();

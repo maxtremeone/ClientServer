@@ -128,11 +128,11 @@ namespace API.Services
             return employeesDetailDto; // employeeDetail is found;
         }
 
-        public EmployeeDetailDto? GetEmployeeDetailByGuid(Guid guid) 
+        public EmployeeDetailDto? GetEmployeeDetailByGuid(Guid guid)
         {
             var employee = _employeeRepository.GetByGuid(guid);
 
-            if (employee == null) 
+            if (employee == null)
             {
                 return null;
             }
