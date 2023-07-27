@@ -46,14 +46,24 @@ namespace API.Services
                                     select a).FirstOrDefault();
             _accountRepository.Clear();
 
+            if (getAccountDetail is null)
+            {
+                return -1; // Account not found
+            }
+
+            if (getAccountDetail.Otp != changePasswordDto.OTP)
+            {
+                return -2;
+            }
+
             if (getAccountDetail.IsUsed)
             {
-                return 1;
+                return -3;
             }
 
             if (getAccountDetail.ExpiredTime < DateTime.Now)
             {
-                return 2;
+                return -4;
             }
 
             var account = new Account
@@ -70,10 +80,10 @@ namespace API.Services
             var isUpdated = _accountRepository.Update(account);
             if (!isUpdated)
             {
-                return 0; //Account Not Update
+                return -5; //Account Not Update
             }
 
-            return 3;
+            return 1;
         }
         public int ForgotPassword(ForgotPasswordOTPDto forgotPassword)
         {
