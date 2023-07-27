@@ -12,8 +12,8 @@ namespace API.Utilities.Validations.Bookings
             _bookingRepository = bookingRepository;
 
             RuleFor(b => b.StartDate)
-                .NotEmpty()
-                .GreaterThanOrEqualTo(DateTime.Now.AddDays(1)).WithMessage("");
+                .NotEmpty();
+                //.GreaterThanOrEqualTo(DateTime.Now.AddDays(1)).WithMessage("Booking Must 1 Day");
 
             RuleFor(b => b.EndDate)
                .NotEmpty();

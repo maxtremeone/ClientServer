@@ -14,5 +14,10 @@ namespace API.Repositories
         {
             return _context.Set<University>().SingleOrDefault(u => u.Code == code);
         }
+
+        public Guid GetLastUniversityGuid()
+        {
+            return _context.Set<University>().ToList().LastOrDefault().Guid;
+        }
     }
 }

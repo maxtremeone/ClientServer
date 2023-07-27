@@ -155,5 +155,51 @@ namespace API.Controllers
                 Message = "Delete Success"
             });
         }
+
+        [HttpGet("employees-detail")]
+        public IActionResult GetAllEmployeeDetail()
+        {
+            var result = _employeeService.GetAllEmployeeDetail();
+            if (!result.Any())
+            {
+                return NotFound(new ResponseHandler<EmployeeDetailDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "data not found"
+                });
+            }
+
+            return Ok(new ResponseHandler<IEnumerable<EmployeeDetailDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success retrieve data",
+                Data = result
+            });
+        }
+
+        [HttpGet("employees-detail/{guid}")]
+        public IActionResult GetEmployeeDetailByGuid(Guid guid)
+        {
+            var result = _employeeService.GetEmployeeDetailByGuid(guid);
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<EmployeeDetailDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "guid not found"
+                });
+            }
+
+            return Ok(new ResponseHandler<EmployeeDetailDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success retrieve data",
+                Data = result
+            });
+        }
     }
 }

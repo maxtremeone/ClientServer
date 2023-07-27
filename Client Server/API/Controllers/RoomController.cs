@@ -124,34 +124,57 @@ namespace API.Controllers
 
         [HttpDelete]
         public IActionResult Delete(Guid guid)
+        {
+            var result = _roomService.Delete(guid);
+            if (result is -1)
             {
-                var result = _roomService.Delete(guid);
-                if (result is -1)
+                return NotFound(new ResponseHandler<RoomDto>
                 {
-                    return NotFound(new ResponseHandler<RoomDto> 
-                    {
-                        Code = StatusCodes.Status404NotFound,
-                        Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Guid is Not Found"
-                    });
-                }
-
-                if (result is 0)
-                {
-                    return StatusCode(500, new ResponseHandler<RoomDto>
-                        {
-                        Code = StatusCodes.Status500InternalServerError,
-                        Status = HttpStatusCode.NotFound.ToString(),
-                        Message = "Error Retrieve from Database"
-                        });
-                }
-
-                return Ok(new ResponseHandler<RoomDto>()
-                {
-                    Code = StatusCodes.Status200OK,
-                    Status = HttpStatusCode.OK.ToString(),
-                    Message = "Delete Success"
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Guid is Not Found"
                 });
             }
+
+            if (result is 0)
+            {
+                return StatusCode(500, new ResponseHandler<RoomDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Error Retrieve from Database"
+                });
+            }
+
+            return Ok(new ResponseHandler<RoomDto>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Delete Success"
+            });
+        }
+
+        [HttpGet("booked-room-today")]
+        public IActionResult GetBookedRoom()
+        {
+            var result = _roomService.GetAllBookedRoom();
+            if (result is null)
+            {
+                return NotFound(new ResponseHandler<BookedRoomDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "guid not found"
+                });
+            }
+
+            return Ok(new ResponseHandler<IEnumerable<BookedRoomDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success retrieve data",
+                Data = result
+            });
         }
     }
+}
