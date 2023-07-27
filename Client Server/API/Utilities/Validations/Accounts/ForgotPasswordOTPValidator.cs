@@ -13,7 +13,8 @@ namespace API.Utilities.Validations.Accounts
             _accountRepository = accountRepository;
 
             RuleFor(e => e.Email)
-               .NotEmpty();
+               .NotEmpty()
+               .EmailAddress().WithMessage("Email is not valid");
         }
     }
 }

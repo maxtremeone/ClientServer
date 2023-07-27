@@ -216,13 +216,11 @@ namespace API.Controllers
             }
         }
 
-
-        [HttpPost("forget-password")]
-
-        public IActionResult ForgetPassword(ForgotPasswordOTPDto forgetPasswordDto)
+        [HttpPost("forgot-password")]
+        public IActionResult ForgetPassword(ForgotPasswordOTPDto forgotPasswordDto)
         {
-            var isUpdated = _accountService.ForgotPassword(forgetPasswordDto);
-            if (isUpdated == 0)
+            var isUpdated = _accountService.ForgotPassword(forgotPasswordDto);
+            if (isUpdated is 0)
                 return NotFound(new ResponseHandler<ForgotPasswordOTPDto>
                 {
                     Code = StatusCodes.Status404NotFound,
@@ -242,8 +240,7 @@ namespace API.Controllers
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Otp has been sent to your email",
-                Data = forgetPasswordDto
+                Message = "Otp has been sent to your email"
             });
         }
 

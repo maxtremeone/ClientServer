@@ -1,5 +1,6 @@
 ﻿using API.Contracts;
 using API.DTOs.Accounts;
+using API.Repositories;
 using FluentValidation;
 
 namespace API.Utilities.Validations.Accounts
@@ -13,7 +14,8 @@ namespace API.Utilities.Validations.Accounts
             _accountRepository = accountRepository;
 
             RuleFor(a => a.Email)
-               .NotEmpty();
+               .NotEmpty().WithMessage("Email is required")
+               .EmailAddress().WithMessage("Email is not valid");
 
             RuleFor(a => a.NewPassword)
                 .NotEmpty()
