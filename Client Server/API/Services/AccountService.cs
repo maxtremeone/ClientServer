@@ -176,7 +176,8 @@ namespace API.Services
             toUpdate.CreatedDate = Account.CreatedDate;
             var result = _accountRepository.Update(toUpdate);
 
-            return result ? 1 // account is updated;
+            return result
+                ? 1  // account is updated;
                 : 0; // account failed to update;
         }
 
@@ -190,7 +191,8 @@ namespace API.Services
 
             var result = _accountRepository.Delete(account);
 
-            return result ? 1 // account is deleted;
+            return result
+                ? 1  // account is deleted;
                 : 0; // account failed to delete;
         }
 
@@ -212,81 +214,75 @@ namespace API.Services
 
             return 0;
         }
+
         public int Register(RegisterDto registerDto)
         {
             // ini untuk cek emaik sama phone number udah ada atau belum
-            if (!_employeeRepository.IsNotExist(registerDto.Email) || !_employeeRepository.IsNotExist(registerDto.PhoneNumber))
+            if (!_employeeRepository.IsNotExist(registerDto.Email) ||
+                !_employeeRepository.IsNotExist(registerDto.PhoneNumber))
             {
                 return 0; // kalau sudah ada, pendaftaran gagal.
             }
 
-            var newNik = GenerateHandler.Nik(_employeeRepository.GetLastNik()); //karena niknya generate, sebelumnya kalo ga dikasih ini niknya null jadi error
-            var employeeGuid = Guid.NewGuid(); // Generate GUID baru untuk employee
-
-            // Buat objek Employee dengan nilai GUID baru
-            var employee = new Employee
-            {
-                Guid = employeeGuid, //ambil dari variabel yang udah dibuat diatas
-                Nik = newNik, //ini juga
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
-                BirthDate = registerDto.BirthDate,
-                Gender = registerDto.Gender,
-                HiringDate = registerDto.HiringDate,
-                Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber
-            };
-            _dbContext.Employees.Add(employee);
-
-           
-            var education = new Education
-            {
-                Guid = employeeGuid, // Gunakan employeeGuid
-                Major = registerDto.Major,
-                Degree = registerDto.Degree,
-                Gpa = (float)registerDto.Gpa
-            };
-            _dbContext.Educations.Add(education);
-
-            // Cek apakah kode univ sudah ada di tabel
-            var existingUniversity = _universityRepository.GetByCode(registerDto.UnivCode);
-            if (existingUniversity is null)
-            {
-                // Jika universitas belum ada, buat objek University baru dan simpan
-                var university = new University
-                {
-                    Code = registerDto.UnivCode,
-                    Name = registerDto.UnivName
-                };
-                _dbContext.Universities.Add(university);
-
-                // Set nilai UniversityGuid pada objek Education menggunakan GUID baru dari universitas yang baru dibuat
-                education.UniversityGuid = university.Guid;
-            }
-            else
-            {
-                // kalau universitas sudah ada, gunakan UniversityGuid yang sudah ada untuk objek Education
-                education.UniversityGuid = existingUniversity.Guid;
-            }
-
-            
-            var account = new Account
-            {
-                Guid = employeeGuid, // Gunakan employeeGuid
-                Otp = registerDto.Otp,//sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
-                Password = registerDto.Password
-            };
-            _dbContext.Accounts.Add(account);
-
+            using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                _dbContext.SaveChanges(); // Simpan perubahan
-                return 1; // Pendaftaran berhasil
+                var university = _universityRepository.GetByCode(registerDto.UniversityCode);
+                if (university is null)
+                {
+                    // Jika universitas belum ada, buat objek University baru dan simpan
+                    var createUniversity = _universityRepository.Create(new University
+                    {
+                        Code = registerDto.UniversityCode,
+                        Name = registerDto.UniversityName
+                    });
+
+                    university = createUniversity;
+                }
+
+                var newNik =
+                    GenerateHandler.Nik(_employeeRepository
+                                           .GetLastNik()); //karena niknya generate, sebelumnya kalo ga dikasih ini niknya null jadi error
+                var employeeGuid = Guid.NewGuid(); // Generate GUID baru untuk employee
+
+                // Buat objek Employee dengan nilai GUID baru
+                var employee = _employeeRepository.Create(new Employee
+                {
+                    Guid = employeeGuid, //ambil dari variabel yang udah dibuat diatas
+                    Nik = newNik,        //ini juga
+                    FirstName = registerDto.FirstName,
+                    LastName = registerDto.LastName,
+                    BirthDate = registerDto.BirthDate,
+                    Gender = registerDto.Gender,
+                    HiringDate = registerDto.HiringDate,
+                    Email = registerDto.Email,
+                    PhoneNumber = registerDto.PhoneNumber
+                });
+
+
+                var education = _educationRepository.Create(new Education
+                {
+                    Guid = employeeGuid, // Gunakan employeeGuid
+                    Major = registerDto.Major,
+                    Degree = registerDto.Degree,
+                    Gpa = registerDto.Gpa,
+                    UniversityGuid = university.Guid
+                });
+
+                var account = _accountRepository.Create(new Account
+                {
+                    Guid = employeeGuid, // Gunakan employeeGuid
+                    Otp = 1,             //sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
+                    IsUsed = true,
+                    Password = registerDto.Password
+                });
+                transaction.Commit();
+                return 1;
             }
-            catch (Exception)
+            catch
             {
-                // ini kalo ada kesalahan menyimpan ke tabel, di catch pake exception
-                return -1; // Pendaftaran gagal
+                transaction.Rollback();
+                return -1;
             }
         }
     }
