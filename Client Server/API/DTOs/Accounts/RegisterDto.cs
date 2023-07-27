@@ -13,10 +13,9 @@ namespace API.DTOs.Accounts
         public string PhoneNumber { get; set; }
         public string Major { get; set; }
         public string Degree { get; set; }
-        public double Gpa { get; set; }
-        public string UnivCode { get; set; }
-        public string UnivName { get; set; }
-        public int Otp { get; set; }
+        public float Gpa { get; set; }
+        public string UniversityCode { get; set; }
+        public string UniversityName { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
     }
