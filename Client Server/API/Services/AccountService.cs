@@ -191,5 +191,76 @@ namespace API.Services
             }
         }
 
+        public int ForgotPassword(ForgotPasswordOTPDto forgotPassword)
+        {
+            var employee = _employeeRepository.GetByEmail(forgotPassword.Email);
+            if (employee is null)
+                return 0; // Email not found
+
+            var account = _accountRepository.GetByGuid(employee.Guid);
+            if (account is null)
+                return -1;
+            var otp = new Random().Next(111111, 999999);
+            var isUpdated = _accountRepository.Update(new Account
+            {
+                Guid = account.Guid,
+                Password = account.Password,
+                ExpiredTime = DateTime.Now.AddMinutes(5),
+                Otp = otp,
+                IsUsed = false,
+                CreatedDate = account.CreatedDate,
+                ModifiedDate = DateTime.Now
+            });
+
+            if (!isUpdated)
+                return -1;
+
+            forgotPassword.Email = $"{otp}";
+            return 1;
+        }
+
+        public int ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var isExist = _employeeRepository.CheckEmail(changePasswordDto.Email);
+            if (isExist is null)
+            {
+                return -1; //Account not found
+            }
+
+            var getAccount = _accountRepository.GetByGuid(isExist.Guid);
+            if (getAccount.Otp != changePasswordDto.OTP)
+            {
+                return 0;
+            }
+
+            if (getAccount.IsUsed == true)
+            {
+                return 1;
+            }
+
+            if (getAccount.ExpiredTime < DateTime.Now)
+            {
+                return 2;
+            }
+
+            var account = new Account
+            {
+                Guid = getAccount.Guid,
+                IsUsed = true,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getAccount.CreatedDate,
+                Otp = getAccount.Otp,
+                ExpiredTime = getAccount.ExpiredTime,
+                Password = changePasswordDto.NewPassword
+            };
+
+            var isUpdated = _accountRepository.Update(account);
+            if (!isUpdated)
+            {
+                return 0; //Account Not Update
+            }
+
+            return 3;
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace API.Utilities.Validations.Employees
                 .NotEmpty()
                 .MaximumLength(20)
                 .Matches(@"^\+[0-9]").WithMessage("Phone number must start with +")
-                .Must(IsDuplicateValue).WithMessage("Phone number already exist"); ;
+                .Must(IsDuplicateValue).WithMessage("Phone number already exist");
         }
 
         private bool IsDuplicateValue(string arg)
