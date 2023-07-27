@@ -72,4 +72,9 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
             return false;
         }
     }
+
+    public void Clear()
+    {
+        _context.ChangeTracker.Clear();
+    }
 }

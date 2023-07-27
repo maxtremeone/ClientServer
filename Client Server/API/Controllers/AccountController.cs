@@ -27,16 +27,14 @@ namespace API.Controllers
             var result = _accountService.GetAll();
             if (!result.Any())
             {
-                return NotFound(new ResponseHandler<IEnumerable<AccountDto>>
-                {
+                return NotFound(new ResponseHandler<IEnumerable<AccountDto>> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Guid is Not Found"
                 });
             }
 
-            return Ok(new ResponseHandler<IEnumerable<AccountDto>>()
-            {
+            return Ok(new ResponseHandler<IEnumerable<AccountDto>>() {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success retrieve data",
@@ -50,16 +48,14 @@ namespace API.Controllers
             var result = _accountService.GetByGuid(guid);
             if (result is null)
             {
-                return NotFound(new ResponseHandler<AccountDto>
-                {
+                return NotFound(new ResponseHandler<AccountDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Guid is Not Found"
                 });
             }
 
-            return Ok(new ResponseHandler<AccountDto>()
-            {
+            return Ok(new ResponseHandler<AccountDto>() {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success retrieve data",
@@ -73,16 +69,14 @@ namespace API.Controllers
             var result = _accountService.Create(newAccountDto);
             if (result is null)
             {
-                return StatusCode(500, new ResponseHandler<NewAccountDto>
-                {
+                return StatusCode(500, new ResponseHandler<NewAccountDto> {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Error Retrieve from database"
                 });
             }
 
-            return Ok(new ResponseHandler<NewAccountDto>()
-            {
+            return Ok(new ResponseHandler<NewAccountDto>() {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success Post Data",
@@ -97,8 +91,7 @@ namespace API.Controllers
 
             if (result is -1)
             {
-                return NotFound(new ResponseHandler<AccountDto>
-                {
+                return NotFound(new ResponseHandler<AccountDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Guid is Not Found"
@@ -107,16 +100,14 @@ namespace API.Controllers
 
             if (result is 0)
             {
-                return StatusCode(500, new ResponseHandler<AccountDto>
-                {
+                return StatusCode(500, new ResponseHandler<AccountDto> {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Error Retrieve from database"
                 });
             }
 
-            return Ok(new ResponseHandler<AccountDto>()
-            {
+            return Ok(new ResponseHandler<AccountDto>() {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Update Succes",
@@ -131,25 +122,23 @@ namespace API.Controllers
 
             if (result is -1)
             {
-                return NotFound(new ResponseHandler<AccountDto>
-                {
+                return NotFound(new ResponseHandler<AccountDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Guid is Not Found"
                 });
             }
+
             if (result is 0)
             {
-                return StatusCode(500, new ResponseHandler<AccountDto>
-                {
+                return StatusCode(500, new ResponseHandler<AccountDto> {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Error Retrieve from database"
                 });
             }
 
-            return Ok(new ResponseHandler<AccountDto>()
-            {
+            return Ok(new ResponseHandler<AccountDto>() {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Delete Success"
@@ -163,16 +152,14 @@ namespace API.Controllers
 
             if (result is 0)
             {
-                return NotFound(new ResponseHandler<LoginDto>
-                {
+                return NotFound(new ResponseHandler<LoginDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Email or Password is incorrect"
                 });
             }
 
-            return Ok(new ResponseHandler<LoginDto>
-            {
+            return Ok(new ResponseHandler<LoginDto> {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Login Success"
@@ -187,63 +174,54 @@ namespace API.Controllers
             if (result == 0)
             {
                 // Jika pendaftaran gagal, kirim respons dengan status 400 Bad Request
-                return BadRequest(new ResponseHandler<RegisterDto>
-                {
+                return BadRequest(new ResponseHandler<RegisterDto> {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
                     Message = "Email or PhoneNumber is already registered."
                 });
             }
-            else if (result == 1)
+
+            if (result == 1)
             {
                 // Jika pendaftaran berhasil, kirim respons dengan status 200 OK
-                return Ok(new ResponseHandler<RegisterDto>
-                {
+                return Ok(new ResponseHandler<RegisterDto> {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
                     Message = "Registration Success."
                 });
             }
-            else
-            {
-                // Jika terjadi kesalahan lain, kirim respons dengan status 500 Internal Server Error
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<RegisterDto>
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Error retrieve from database."
-                });
-            }
+
+            // Jika terjadi kesalahan lain, kirim respons dengan status 500 Internal Server Error
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<RegisterDto> {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Error retrieve from database."
+            });
         }
 
 
-        [HttpPost("forget-password")]
-
-        public IActionResult ForgetPassword(ForgotPasswordOTPDto forgetPasswordDto)
+        [HttpPost("forgot-password")]
+        public IActionResult ForgetPassword(ForgotPasswordOTPDto forgotPasswordDto)
         {
-            var isUpdated = _accountService.ForgotPassword(forgetPasswordDto);
+            var isUpdated = _accountService.ForgotPassword(forgotPasswordDto);
             if (isUpdated == 0)
-                return NotFound(new ResponseHandler<ForgotPasswordOTPDto>
-                {
+                return NotFound(new ResponseHandler<ForgotPasswordOTPDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Email not found"
                 });
 
             if (isUpdated is -1)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<ForgotPasswordOTPDto>
-                {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<ForgotPasswordOTPDto> {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
                     Message = "Error retrieving data from the database"
                 });
 
-            return Ok(new ResponseHandler<ForgotPasswordOTPDto>
-            {
+            return Ok(new ResponseHandler<ForgotPasswordOTPDto> {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Otp has been sent to your email",
-                Data = forgetPasswordDto
+                Message = "Otp has been sent to your email"
             });
         }
 
@@ -253,8 +231,7 @@ namespace API.Controllers
             var update = _accountService.ChangePassword(changePasswordDto);
             if (update is -1)
             {
-                return NotFound(new ResponseHandler<ChangePasswordDto>
-                {
+                return NotFound(new ResponseHandler<ChangePasswordDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Email not found"
@@ -263,8 +240,7 @@ namespace API.Controllers
 
             if (update is 0)
             {
-                return NotFound(new ResponseHandler<ChangePasswordDto>
-                {
+                return NotFound(new ResponseHandler<ChangePasswordDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "OTP doesn't match"
@@ -273,8 +249,7 @@ namespace API.Controllers
 
             if (update is 1)
             {
-                return NotFound(new ResponseHandler<ChangePasswordDto>
-                {
+                return NotFound(new ResponseHandler<ChangePasswordDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "OTP Is Used"
@@ -283,16 +258,14 @@ namespace API.Controllers
 
             if (update is 2)
             {
-                return NotFound(new ResponseHandler<ChangePasswordDto>
-                {
+                return NotFound(new ResponseHandler<ChangePasswordDto> {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
                     Message = "Otp Already Expired"
                 });
             }
 
-            return Ok(new ResponseHandler<ChangePasswordDto>
-            {
+            return Ok(new ResponseHandler<ChangePasswordDto> {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Succesfuly Updated"

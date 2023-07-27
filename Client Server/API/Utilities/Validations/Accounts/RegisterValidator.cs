@@ -7,13 +7,9 @@ namespace API.Utilities.Validations.Accounts
     public class RegisterValidator : AbstractValidator<RegisterDto> //diisi DTO karena semua request masuk DTO
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IEducationRepository _educationRepository;
-        private readonly IUniversityRepository _universityRepository;
-        public RegisterValidator(IEmployeeRepository employeeRepository, IEducationRepository educationRepository, IUniversityRepository universityRepository)
+        public RegisterValidator(IEmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
-            _educationRepository = educationRepository;
-            _universityRepository = universityRepository;
 
             RuleFor(e => e.FirstName)
                 .NotEmpty();
@@ -52,13 +48,10 @@ namespace API.Utilities.Validations.Accounts
             RuleFor(e => e.Gpa) 
                 .NotEmpty();
 
-            RuleFor(u => u.UnivCode) 
+            RuleFor(u => u.UniversityCode) 
                 .NotEmpty();
 
-            RuleFor(u => u.UnivName) 
-                .NotEmpty();
-
-            RuleFor(a => a.Otp)
+            RuleFor(u => u.UniversityName) 
                 .NotEmpty();
 
             RuleFor(a => a.Password)
