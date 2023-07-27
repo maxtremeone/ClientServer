@@ -28,36 +28,42 @@ namespace API.Services
 
         public int ChangePassword(ChangePasswordDto changePasswordDto)
         {
-            var isExist = _employeeRepository.CheckEmail(changePasswordDto.Email);
-            if (isExist is null)
-            {
-                return -1; //Account not found
-            }
+            //var isExist = _employeeRepository.CheckEmail(changePasswordDto.Email);
+            //if (isExist is null)
+            //{
+            //    return -1; //Account not found
+            //}
 
-            var getAccount = _accountRepository.GetByGuid(isExist.Guid);
-            if (getAccount.Otp != changePasswordDto.OTP)
-            {
-                return 0;
-            }
+            //var getAccount = _accountRepository.GetByGuid(isExist.Guid);
+            //if (getAccount.Otp != changePasswordDto.OTP)
+            //{
+            //    return 0;
+            //}
 
-            if (getAccount.IsUsed)
+            var getAccountDetail = (from e in _employeeRepository.GetAll()
+                                    join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                                    where e.Email == changePasswordDto.Email
+                                    select a).FirstOrDefault();
+            _accountRepository.Clear();
+
+            if (getAccountDetail.IsUsed)
             {
                 return 1;
             }
 
-            if (getAccount.ExpiredTime < DateTime.Now)
+            if (getAccountDetail.ExpiredTime < DateTime.Now)
             {
                 return 2;
             }
 
             var account = new Account
             {
-                Guid = getAccount.Guid,
+                Guid = getAccountDetail.Guid,
                 IsUsed = true,
                 ModifiedDate = DateTime.Now,
-                CreatedDate = getAccount.CreatedDate,
-                Otp = getAccount.Otp,
-                ExpiredTime = getAccount.ExpiredTime,
+                CreatedDate = getAccountDetail.CreatedDate,
+                Otp = getAccountDetail.Otp,
+                ExpiredTime = getAccountDetail.ExpiredTime,
                 Password = changePasswordDto.NewPassword
             };
 
