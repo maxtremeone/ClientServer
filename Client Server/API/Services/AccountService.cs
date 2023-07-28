@@ -198,27 +198,21 @@ namespace API.Services
 
         public int Login(LoginDto loginDto)
         {
-            var getAccount = from e in _employeeRepository.GetAll()
-                              join a in _accountRepository.GetAll() on e.Guid equals a.Guid
-                              where e.Email == loginDto.Email && HashingHandler.ValidateHash(loginDto.Password, a.Password)
-                              select new
-                              {
-                                  Email = e.Email
-                              };
+            var employeeAccount = from e in _employeeRepository.GetAll()
+                                  join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                                  where e.Email == loginDto.Email && HashingHandler.ValidateHash(loginDto.Password, a.Password)
+                                  select new LoginDto()
+                                  {
+                                      Email = e.Email,
+                                      Password = a.Password
+                                  };
 
-            if (!getAccount.Any())
+            if (!employeeAccount.Any())
             {
-                return -1; // Employee not found
+                return -1;
             }
 
-            //var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
-
-            //if (getAccount.Password == loginDto.Password)
-            //{
-            //    return 1; // Login success
-            //}
-
-            return 1;
+            return 1; // Email or Password incorrect.                         
         }
 
         public int Register(RegisterDto registerDto)

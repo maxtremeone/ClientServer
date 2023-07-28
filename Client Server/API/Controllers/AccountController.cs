@@ -161,7 +161,7 @@ namespace API.Controllers
         {
             var result = _accountService.Login(loginDto);
 
-            if (result is 0)
+            if (result is -1)
             {
                 return NotFound(new ResponseHandler<LoginDto>
                 {

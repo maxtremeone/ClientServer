@@ -12,10 +12,12 @@ namespace API.Utilities.Validations.Accounts
             _employeeRepository = employeeRepository;
 
             RuleFor(e => e.Email)
-                .NotEmpty();
+           .NotEmpty()
+           .EmailAddress();
 
             RuleFor(e => e.Password)
-                .NotEmpty();
+                .NotEmpty()
+                .Matches(@"^(?=.*[0-9])(?=.*[A-Z]).{8,}$").WithMessage("Password invalid! Passwords must have at least 1 upper case and 1 number");
         }
     }
 }
