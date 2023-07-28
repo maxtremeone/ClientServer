@@ -19,7 +19,7 @@ namespace API.Utilities.Validations.Accounts
 
             RuleFor(e => e.BirthDate)
                 .NotEmpty()
-                .LessThanOrEqualTo(DateTime.Now.AddYears(-10));
+                .LessThanOrEqualTo(DateTime.Now.AddYears(-10)).WithMessage("Birthdate must be 10 years from now");
 
             RuleFor(e => e.Gender)
                 .NotNull()

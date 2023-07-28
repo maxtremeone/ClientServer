@@ -15,16 +15,20 @@ namespace API.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEducationRepository _educationRepository;
         private readonly IUniversityRepository _universityRepository;
+        private readonly IEmailHandler _emailHandler;
         private readonly BookingDbContext _dbContext;
 
         public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, 
-        IEducationRepository educationRepository, IUniversityRepository universityRepository, BookingDbContext dbContext)
+        IEducationRepository educationRepository, IUniversityRepository universityRepository, 
+        BookingDbContext dbContext, IEmailHandler emailHandler)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
             _educationRepository = educationRepository;
             _universityRepository = universityRepository;
             _dbContext = dbContext;
+            _emailHandler = emailHandler;
+
         }
 
         public int ChangePassword(ChangePasswordDto changePasswordDto)
@@ -116,6 +120,9 @@ namespace API.Services
             {
                 return -1;
             }
+
+            _emailHandler.SendEmail(forgotPasswordOTPDto.Email, "Booking - Forgot Password", $"Your Otp is {otp}");
+
             return 1;
         }
         public IEnumerable<AccountDto> GetAll()

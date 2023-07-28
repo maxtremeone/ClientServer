@@ -258,7 +258,7 @@ namespace API.Controllers
                 });
             }
 
-            if (update is 0)
+            if (update is -2)
             {
                 return NotFound(new ResponseHandler<ChangePasswordDto>
                 {
@@ -268,7 +268,7 @@ namespace API.Controllers
                 });
             }
 
-            if (update is 1)
+            if (update is -3)
             {
                 return NotFound(new ResponseHandler<ChangePasswordDto>
                 {
@@ -278,7 +278,7 @@ namespace API.Controllers
                 });
             }
 
-            if (update is 2)
+            if (update is -4)
             {
                 return NotFound(new ResponseHandler<ChangePasswordDto>
                 {
@@ -292,7 +292,7 @@ namespace API.Controllers
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Succesfuly Updated"
+                Message = "Password Updated"
             });
         }
     }
