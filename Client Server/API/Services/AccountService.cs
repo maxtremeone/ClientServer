@@ -27,6 +27,105 @@ namespace API.Services
             _dbContext = dbContext;
         }
 
+        public int ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            //var isExist = _employeeRepository.CheckEmail(changePasswordDto.Email);
+            //if (isExist is null)
+            //{
+            //    return -1; //Account not found
+            //}
+
+            //var getAccount = _accountRepository.GetByGuid(isExist.Guid);
+            //if (getAccount.Otp != changePasswordDto.OTP)
+            //{
+            //    return 0;
+            //}
+
+            var getAccountDetail = (from e in _employeeRepository.GetAll()
+                                    join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                                    where e.Email == changePasswordDto.Email
+                                    select a).FirstOrDefault();
+            _accountRepository.Clear();
+
+            if (getAccountDetail is null)
+            {
+                return -1; // Account not found
+            }
+
+            if (getAccountDetail.Otp != changePasswordDto.OTP)
+            {
+                return -2;
+            }
+
+            if (getAccountDetail.IsUsed)
+            {
+                return -3;
+            }
+
+            if (getAccountDetail.ExpiredTime < DateTime.Now)
+            {
+                return -4;
+            }
+
+            var account = new Account
+            {
+                Guid = getAccountDetail.Guid,
+                IsUsed = true,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getAccountDetail.CreatedDate,
+                Otp = getAccountDetail.Otp,
+                ExpiredTime = getAccountDetail.ExpiredTime,
+                Password = HashingHandler.GenerateHash(changePasswordDto.NewPassword)
+            };
+
+            var isUpdated = _accountRepository.Update(account);
+            if (!isUpdated)
+            {
+                return -5; //Account Not Update
+            }
+
+            return 1;
+        }
+        public int ForgotPassword(ForgotPasswordOTPDto forgotPassword)
+        {
+            /*var employee = _employeeRepository.GetByEmail(forgotPassword.Email);
+            if (employee is null)
+                return 0; // Email not found
+
+            var account = _accountRepository.GetByGuid(employee.Guid);
+            if (account is null)
+                return -1;*/
+
+            var getAccountDetail = (from e in _employeeRepository.GetAll()
+                                    join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                                    where e.Email == forgotPassword.Email
+                                    select a).FirstOrDefault();
+
+            _accountRepository.Clear();
+            if (getAccountDetail is null)
+            {
+                return 0;
+            }
+
+            var otp = new Random().Next(111111, 999999);
+            var account = new Account
+            {
+                Guid = getAccountDetail.Guid,
+                Password = getAccountDetail.Password,
+                ExpiredTime = DateTime.Now.AddMinutes(5),
+                Otp = otp,
+                IsUsed = false,
+                CreatedDate = getAccountDetail.CreatedDate,
+                ModifiedDate = DateTime.Now
+            };
+
+            var isUpdated = _accountRepository.Update(account);
+
+            if (!isUpdated)
+                return -1;
+
+            return 1;
+        }
         public IEnumerable<AccountDto> GetAll()
         {
             var accounts = _accountRepository.GetAll();
@@ -109,7 +208,7 @@ namespace API.Services
 
             var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
 
-            if (getAccount.Password == loginDto.Password)
+            if (HashingHandler.ValidateHash(loginDto.Password, getAccount.Password))
             {
                 return 1; // Login success
             }
@@ -172,7 +271,7 @@ namespace API.Services
                     Guid = employeeGuid, // Gunakan employeeGuid
                     Otp = 1,             //sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
                     IsUsed = true,
-                    Password = registerDto.Password
+                    Password = HashingHandler.GenerateHash(registerDto.Password)
                 });
                 transaction.Commit();
                 return 1;
