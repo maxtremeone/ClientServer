@@ -204,9 +204,9 @@ namespace API.Controllers
         }
 
         [HttpGet("Free-roooms-today")]
-        public IActionResult FreeRoomToday()
+        public IActionResult FreeRoomsToday()
         {
-            var result = _bookingService.FreeRoomToday();
+            var result = _bookingService.FreeRoomsToday();
             if (result is null)
             {
                 return NotFound(new ResponseHandler<RoomDto>

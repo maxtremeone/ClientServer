@@ -122,38 +122,31 @@ namespace API.Services
         }
 
 
-        public IEnumerable<RoomDto> FreeRoomToday()
+        public IEnumerable<RoomDto> FreeRoomsToday()
         {
-            List<RoomDto> roomDtos = new List<RoomDto>();
-            var bookings = GetAll();
-            var freeBookings = bookings.Where(b => b.Status == StatusLevel.Done);
-            var freeBookingsToday = freeBookings.Where(b => b.EndDate < DateTime.Now);
-            foreach (var booking in freeBookingsToday)
-            {
-                var roomGuid = booking.RoomGuid;
-                var room = _roomRepository.GetByGuid(roomGuid);
-                RoomDto roomDto = new RoomDto()
-                {
-                    Guid = roomGuid,
-                    Capacity = room.Capacity,
-                    Floor = room.Floor,
-                    Name = room.Name
-                };
-                roomDtos.Add(roomDto);
-            }
+            var roomBooking = from r in _roomRepository.GetAll()
+                              join b in GetAll() on r.Guid equals b.Guid into bookingGroup
+                              from b in bookingGroup.DefaultIfEmpty()
+                              where b == null || b.EndDate < DateTime.Now || b.RoomGuid != r.Guid
+                              select new RoomDto()
+                              {
+                                  Guid = r.Guid,
+                                  Capacity = r.Capacity,
+                                  Floor = r.Floor,
+                                  Name = r.Name
+                              };
 
-            if (!roomDtos.Any())
+            if (!roomBooking.Any())
             {
                 return null; // No free room today
             }
 
-            return roomDtos; // free room today
+            return roomBooking; // free room today
         }
 
         public IEnumerable<BookingLengthDto> BookingLength()
         {
             List<BookingLengthDto> listBookingLength = new List<BookingLengthDto>();
-            TimeSpan workingHour = new TimeSpan(8, 30, 0);
             var timeSpan = new TimeSpan();
             var bookings = GetAll();
             foreach (var booking in bookings)
@@ -161,19 +154,27 @@ namespace API.Services
                 var currentDate = booking.StartDate;
                 var endDate = booking.EndDate;
 
-                while (currentDate <= endDate)
+                while (currentDate.Date <= endDate.Date)
                 {
                     // Memeriksa apakah hari saat ini adalah Sabtu atau Minggu
                     if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
                     {
-                        // Hari kerja, menghitung waktu kerja dengan memperhitungkan jam
-                        DateTime openRoom = currentDate.Date.AddHours(9); // Misalnya, waktu kerja dimulai pada pukul 09:00
-                        DateTime closeRoom = currentDate.Date.AddHours(17).AddMinutes(30); // Misalnya, waktu kerja selesai pada pukul 17:30
+                        if (currentDate.Date == endDate.Date)
+                        {
+                            // Hari terakhir, menghitung sisa jam penyewaan
+                            TimeSpan lastDay = currentDate - endDate;
+                            timeSpan += lastDay;
+                        }
+                        else
+                        {
+                            // Hari kerja, menghitung waktu kerja dengan memperhitungkan jam
+                            DateTime openRoom = currentDate.Date.AddHours(9); // Misalnya, waktu kerja dimulai pada pukul 09:00
+                            DateTime closeRoom = currentDate.Date.AddHours(17).AddMinutes(30); // Misalnya, waktu kerja selesai pada pukul 17:30
 
-                        TimeSpan dayTime = closeRoom - openRoom;
-                        timeSpan += dayTime;
+                            TimeSpan dayTime = closeRoom - openRoom;
+                            timeSpan += dayTime;
+                        }
                     }
-
                     currentDate = currentDate.AddDays(1); // Pindah ke hari berikutnya
                 }
 

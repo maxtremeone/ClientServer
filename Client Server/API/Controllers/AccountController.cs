@@ -219,7 +219,7 @@ namespace API.Controllers
         [HttpPost("forgot-password")]
         public IActionResult ForgetPassword(ForgotPasswordOTPDto forgotPasswordDto)
         {
-            var isUpdated = _accountService.ForgotPassword(forgotPasswordDto);
+            var isUpdated = _accountService.ForgotPasswordOTPDto(forgotPasswordDto);
             if (isUpdated is 0)
                 return NotFound(new ResponseHandler<ForgotPasswordOTPDto>
                 {

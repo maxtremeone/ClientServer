@@ -3,6 +3,7 @@ using API.Data;
 using API.DTOs.Accounts;
 using API.Models;
 using API.Repositories;
+using API.Utilities.Enums;
 using API.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,7 +75,7 @@ namespace API.Services
                 CreatedDate = getAccountDetail.CreatedDate,
                 Otp = getAccountDetail.Otp,
                 ExpiredTime = getAccountDetail.ExpiredTime,
-                Password = changePasswordDto.NewPassword
+                Password = HashingHandler.GenerateHash(getAccountDetail.Password)
             };
 
             var isUpdated = _accountRepository.Update(account);
@@ -85,22 +86,14 @@ namespace API.Services
 
             return 1;
         }
-        public int ForgotPassword(ForgotPasswordOTPDto forgotPassword)
+        public int ForgotPasswordOTPDto(ForgotPasswordOTPDto forgotPasswordOTPDto)
         {
-            /*var employee = _employeeRepository.GetByEmail(forgotPassword.Email);
-            if (employee is null)
-                return 0; // Email not found
-
-            var account = _accountRepository.GetByGuid(employee.Guid);
-            if (account is null)
-                return -1;*/
-
             var getAccountDetail = (from e in _employeeRepository.GetAll()
                                     join a in _accountRepository.GetAll() on e.Guid equals a.Guid
-                                    where e.Email == forgotPassword.Email
+                                    where e.Email == forgotPasswordOTPDto.Email
                                     select a).FirstOrDefault();
-
             _accountRepository.Clear();
+
             if (getAccountDetail is null)
             {
                 return 0;
@@ -110,7 +103,7 @@ namespace API.Services
             var account = new Account
             {
                 Guid = getAccountDetail.Guid,
-                Password = getAccountDetail.Password,
+                Password = HashingHandler.GenerateHash(getAccountDetail.Password),
                 ExpiredTime = DateTime.Now.AddMinutes(5),
                 Otp = otp,
                 IsUsed = false,
@@ -119,10 +112,10 @@ namespace API.Services
             };
 
             var isUpdated = _accountRepository.Update(account);
-
             if (!isUpdated)
+            {
                 return -1;
-
+            }
             return 1;
         }
         public IEnumerable<AccountDto> GetAll()
@@ -198,21 +191,27 @@ namespace API.Services
 
         public int Login(LoginDto loginDto)
         {
-            var getEmployee = _employeeRepository.GetByEmail(loginDto.Email);
+            var getAccount = from e in _employeeRepository.GetAll()
+                              join a in _accountRepository.GetAll() on e.Guid equals a.Guid
+                              where e.Email == loginDto.Email && HashingHandler.ValidateHash(loginDto.Password, a.Password)
+                              select new
+                              {
+                                  Email = e.Email
+                              };
 
-            if (getEmployee is null)
+            if (!getAccount.Any())
             {
-                return 0; // Employee not found
+                return -1; // Employee not found
             }
 
-            var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
+            //var getAccount = _accountRepository.GetByGuid(getEmployee.Guid);
 
-            if (getAccount.Password == loginDto.Password)
-            {
-                return 1; // Login success
-            }
+            //if (getAccount.Password == loginDto.Password)
+            //{
+            //    return 1; // Login success
+            //}
 
-            return 0;
+            return 1;
         }
 
         public int Register(RegisterDto registerDto)
@@ -241,8 +240,7 @@ namespace API.Services
                 }
 
                 var newNik =
-                    GenerateHandler.Nik(_employeeRepository
-                                           .GetLastNik()); //karena niknya generate, sebelumnya kalo ga dikasih ini niknya null jadi error
+                    GenerateHandler.Nik(_employeeRepository.GetLastNik()); //karena niknya generate, sebelumnya kalo ga dikasih ini niknya null jadi error
                 var employeeGuid = Guid.NewGuid(); // Generate GUID baru untuk employee
 
                 // Buat objek Employee dengan nilai GUID baru
@@ -274,7 +272,7 @@ namespace API.Services
                     Guid = employeeGuid, // Gunakan employeeGuid
                     Otp = 1,             //sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
                     IsUsed = true,
-                    Password = registerDto.Password
+                    Password = HashingHandler.GenerateHash(registerDto.Password)
                 });
                 transaction.Commit();
                 return 1;
