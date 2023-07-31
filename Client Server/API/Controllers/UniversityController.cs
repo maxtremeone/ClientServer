@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using API.Utilities.Handlers;
 using System.Collections;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/univerities")]
+    [Authorize(Roles = "Employee")]
     public class UniversityController : ControllerBase
     {
         private readonly UniversityService _universityService; //IUniversityRepository _universityRepository diganti jadi UniversityService _universityService

@@ -7,11 +7,13 @@ using API.DTOs.Roles;
 using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Rooms;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly AccountService _accountService;
@@ -145,12 +147,13 @@ namespace API.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login(LoginDto loginDto)
         {
             var result = _accountService.Login(loginDto);
 
-            if (result is 0)
+            if (result is "-1")
             {
                 return NotFound(new ResponseHandler<LoginDto> {
                     Code = StatusCodes.Status404NotFound,
@@ -159,13 +162,28 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandler<LoginDto> {
+            if (result is "-2")
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<LoginDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Error when generate token."
+                });
+            }
+
+            return Ok(new ResponseHandler<TokenDto>
+            {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Login Success"
+                Message = "Login Success",
+                Data = new TokenDto {
+                    Token = result
+                }
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register(RegisterDto registerDto)
         {

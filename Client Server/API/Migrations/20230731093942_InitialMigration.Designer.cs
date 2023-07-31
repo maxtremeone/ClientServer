@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(BookingDbContext))]
-    [Migration("20230720102845_Cardinality1")]
-    partial class Cardinality1
+    [Migration("20230731093942_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -262,6 +262,15 @@ namespace API.Migrations
                     b.HasKey("Guid");
 
                     b.ToTable("tb_m_roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Guid = new Guid("4887ec13-b482-47b3-9b24-08db91a71770"),
+                            CreatedDate = new DateTime(2023, 7, 31, 16, 39, 42, 641, DateTimeKind.Local).AddTicks(6072),
+                            ModifiedDate = new DateTime(2023, 7, 31, 16, 39, 42, 641, DateTimeKind.Local).AddTicks(6082),
+                            Name = "Employee"
+                        });
                 });
 
             modelBuilder.Entity("API.Models.Room", b =>

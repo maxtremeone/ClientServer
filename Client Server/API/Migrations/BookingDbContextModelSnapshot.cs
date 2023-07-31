@@ -260,6 +260,15 @@ namespace API.Migrations
                     b.HasKey("Guid");
 
                     b.ToTable("tb_m_roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Guid = new Guid("4887ec13-b482-47b3-9b24-08db91a71770"),
+                            CreatedDate = new DateTime(2023, 7, 31, 16, 39, 42, 641, DateTimeKind.Local).AddTicks(6072),
+                            ModifiedDate = new DateTime(2023, 7, 31, 16, 39, 42, 641, DateTimeKind.Local).AddTicks(6082),
+                            Name = "Employee"
+                        });
                 });
 
             modelBuilder.Entity("API.Models.Room", b =>
