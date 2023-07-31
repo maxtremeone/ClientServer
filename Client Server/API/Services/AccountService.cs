@@ -1,11 +1,14 @@
 ﻿using API.Contracts;
 using API.Data;
+using API.DTOs.AccountRoles;
 using API.DTOs.Accounts;
 using API.Models;
 using API.Repositories;
 using API.Utilities.Enums;
 using API.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using TokenHandler = Microsoft.IdentityModel.Tokens.TokenHandler;
 
 namespace API.Services
 {
@@ -15,18 +18,22 @@ namespace API.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEducationRepository _educationRepository;
         private readonly IUniversityRepository _universityRepository;
+        private readonly IAccountRoleRepository _accountRoleRepository;
         private readonly IEmailHandler _emailHandler;
+        private readonly ITokenHandler _tokenHandler;
         private readonly BookingDbContext _dbContext;
 
         public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, 
         IEducationRepository educationRepository, IUniversityRepository universityRepository, 
-        BookingDbContext dbContext, IEmailHandler emailHandler)
+        BookingDbContext dbContext, IEmailHandler emailHandler, ITokenHandler tokenHandler, IAccountRoleRepository accountRoleRepository)
         {
             _accountRepository = accountRepository;
             _employeeRepository = employeeRepository;
             _educationRepository = educationRepository;
             _universityRepository = universityRepository;
+            _accountRoleRepository = accountRoleRepository;
             _dbContext = dbContext;
+            _tokenHandler = tokenHandler;
             _emailHandler = emailHandler;
 
         }
@@ -79,7 +86,7 @@ namespace API.Services
                 CreatedDate = getAccountDetail.CreatedDate,
                 Otp = getAccountDetail.Otp,
                 ExpiredTime = getAccountDetail.ExpiredTime,
-                Password = HashingHandler.GenerateHash(getAccountDetail.Password)
+                Password = HashingHandler.GenerateHash(changePasswordDto.NewPassword)
             };
 
             var isUpdated = _accountRepository.Update(account);
@@ -107,7 +114,7 @@ namespace API.Services
             var account = new Account
             {
                 Guid = getAccountDetail.Guid,
-                Password = HashingHandler.GenerateHash(getAccountDetail.Password),
+                Password = getAccountDetail.Password,
                 ExpiredTime = DateTime.Now.AddMinutes(5),
                 Otp = otp,
                 IsUsed = false,
@@ -196,7 +203,7 @@ namespace API.Services
                 : 0; // account failed to delete;
         }
 
-        public int Login(LoginDto loginDto)
+        public string Login(LoginDto loginDto)
         {
             var employeeAccount = from e in _employeeRepository.GetAll()
                                   join a in _accountRepository.GetAll() on e.Guid equals a.Guid
@@ -209,10 +216,32 @@ namespace API.Services
 
             if (!employeeAccount.Any())
             {
-                return -1;
+                return "-1"; // Email or Password incorrect.    
             }
 
-            return 1; // Email or Password incorrect.                         
+            var employee = _employeeRepository.GetByEmail(loginDto.Email);
+            var getRoles = _accountRoleRepository.GetRoleNamesByAccountGuid(employee.Guid);
+
+            var claims = new List<Claim>
+            {
+                new Claim("Guid", employee.Guid.ToString()),
+                new Claim("FullName", $"{employee.FirstName} {employee.LastName}"),
+                new Claim("Email", employee.Email)
+            };
+
+            foreach (var role in getRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var generatedToken = _tokenHandler.GenerateToken(claims);
+            if (generatedToken is null) 
+            {
+                return "-2";
+            }
+
+            return generatedToken;
+                                
         }
 
         public int Register(RegisterDto registerDto)
@@ -273,8 +302,17 @@ namespace API.Services
                     Guid = employeeGuid, // Gunakan employeeGuid
                     Otp = 1,             //sementara ini dicoba gabisa diisi angka nol didepan, tadi masukin 098 error
                     IsUsed = true,
-                    Password = HashingHandler.GenerateHash(registerDto.Password)
+                    Password = HashingHandler.GenerateHash(registerDto.Password),
+                    ModifiedDate = DateTime.Now,
+                    CreatedDate = DateTime.Now
                 });
+
+                var accountRole = _accountRoleRepository.Create(new NewAccountRoleDto
+                {
+                    AccountGuid = account.Guid,
+                    RoleGuid = Guid.Parse("d1141f82-b41b-4f74-9ad5-08db91bf7e71")
+                });
+
                 transaction.Commit();
                 return 1;
             }

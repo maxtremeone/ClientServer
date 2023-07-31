@@ -7,11 +7,13 @@ using API.DTOs.Roles;
 using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Rooms;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/employees")]
+    //[Authorize]
     public class EmployeeController : ControllerBase
     {
         private readonly EmployeeService _employeeService;

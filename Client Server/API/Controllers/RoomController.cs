@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using API.Utilities.Handlers;
 using System.Collections;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/rooms")]
+    [Authorize(Roles = "Manager")]
     public class RoomController : ControllerBase
     {
         private readonly RoomService _roomService;
@@ -154,6 +156,7 @@ namespace API.Controllers
             });
         }
 
+        //[AllowAnonymous]
         [HttpGet("booked-room-today")]
         public IActionResult GetBookedRoom()
         {

@@ -8,11 +8,13 @@ using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Rooms;
 using ClientServer.DTOs.Bookings;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/bookings")]
+    //[Authorize]
     public class BookingController : ControllerBase
     {
         private readonly BookingService _bookingService;
@@ -203,6 +205,7 @@ namespace API.Controllers
             });
         }
 
+        //[AllowAnonymous]
         [HttpGet("Free-roooms-today")]
         public IActionResult FreeRoomsToday()
         {
@@ -228,6 +231,7 @@ namespace API.Controllers
         }
 
         [HttpGet("length")]
+        //[AllowAnonymous]
         public IActionResult BookingLength()
         {
             var result = _bookingService.BookingLength();

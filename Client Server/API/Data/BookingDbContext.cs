@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using API.DTOs.Roles;
 
 namespace API.Data
 {
@@ -23,6 +24,19 @@ namespace API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder) //unique constrain
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Role>().HasData(
+            new NewRoleDefaultDto
+            {
+                Guid = Guid.Parse("d1141f82-b41b-4f74-9ad5-08db91bf7e71"),
+                Name = "Employee"
+            //},
+            //new NewRoleDefaultDto
+            //{
+            //    Guid = Guid.Parse("48b59c38-7176-45f0-9ad6-08db91bf7e71"),
+            //    Name = "Manager"
+            });
+
 
             modelBuilder.Entity<Employee>()
                         .HasIndex(e => new

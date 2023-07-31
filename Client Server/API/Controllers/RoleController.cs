@@ -6,11 +6,13 @@ using API.DTOs.Roles;
 using API.DTOs.Universities;
 using API.Utilities.Handlers;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/roles")]
+    //[Authorize]
     public class RoleController : ControllerBase
     {
         private readonly RoleService _roleService;

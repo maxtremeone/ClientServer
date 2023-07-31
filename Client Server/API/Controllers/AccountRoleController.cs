@@ -7,11 +7,13 @@ using API.DTOs.Roles;
 using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Rooms;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/accountRoles")]
+    //[Authorize]
     public class AccountRoleController : ControllerBase
     {
         private readonly AccountRoleService _accountRoleService;
