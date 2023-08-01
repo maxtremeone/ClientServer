@@ -310,7 +310,7 @@ namespace API.Services
                 var accountRole = _accountRoleRepository.Create(new NewAccountRoleDto
                 {
                     AccountGuid = account.Guid,
-                    RoleGuid = Guid.Parse("d1141f82-b41b-4f74-9ad5-08db91bf7e71")
+                    RoleGuid = Guid.Parse("d45a2669-59da-4998-69f2-08db92586f59")
                 });
 
                 transaction.Commit();

@@ -28,13 +28,8 @@ namespace API.Data
             modelBuilder.Entity<Role>().HasData(
             new NewRoleDefaultDto
             {
-                Guid = Guid.Parse("d1141f82-b41b-4f74-9ad5-08db91bf7e71"),
+                Guid = Guid.Parse("d45a2669-59da-4998-69f2-08db92586f59"),
                 Name = "Employee"
-            //},
-            //new NewRoleDefaultDto
-            //{
-            //    Guid = Guid.Parse("48b59c38-7176-45f0-9ad6-08db91bf7e71"),
-            //    Name = "Manager"
             });
 
 
