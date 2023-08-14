@@ -62,6 +62,8 @@ builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<BookingService>();
+
 
 // Add SmtpClient to the container.
 builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
@@ -82,11 +84,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod(); 
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
+
 
 //Jwt Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

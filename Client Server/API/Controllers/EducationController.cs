@@ -8,12 +8,14 @@ using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Rooms;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/educations")]
     //[Authorize]
+    [EnableCors]
     public class EducationController : ControllerBase
     {
         private readonly EducationService _educationService;

@@ -6,12 +6,14 @@ using System.Net;
 using API.Utilities.Handlers;
 using System.Collections;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/univerities")]
-    [Authorize(Roles = "Employee")]
+    //[Authorize(Roles = "Employee")]
+    [EnableCors]
     public class UniversityController : ControllerBase
     {
         private readonly UniversityService _universityService; //IUniversityRepository _universityRepository diganti jadi UniversityService _universityService

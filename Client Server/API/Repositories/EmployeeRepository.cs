@@ -1,5 +1,6 @@
 ﻿using API.Contracts;
 using API.Data;
+using API.DTOs.Employees;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,9 +23,14 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
     //                   .SingleOrDefault(e => e.Email == value || e.PhoneNumber == value) == null;
     //}
 
+    //public string? GetLastNik()
+    //{
+    //    return _context.Set<Employee>().ToList().LastOrDefault()?.Nik;
+    //}
+
     public string? GetLastNik()
     {
-        return _context.Set<Employee>().ToList().LastOrDefault()?.Nik;
+        return _context.Set<Employee>().ToList().OrderBy(emp => emp.Nik).LastOrDefault()?.Nik;
     }
 
     public Employee? GetByEmail(string email)

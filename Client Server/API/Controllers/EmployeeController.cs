@@ -1,19 +1,18 @@
 ﻿using API.Services;
-using API.Models;
-using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using API.DTOs.Employees;
-using API.DTOs.Roles;
 using API.Utilities.Handlers;
 using System.Net;
-using API.DTOs.Rooms;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/employees")]
-    //[Authorize]
+    [Authorize]
+    [EnableCors]
+
     public class EmployeeController : ControllerBase
     {
         private readonly EmployeeService _employeeService;
@@ -203,5 +202,7 @@ namespace API.Controllers
                 Data = result
             });
         }
+
+      
     }
 }

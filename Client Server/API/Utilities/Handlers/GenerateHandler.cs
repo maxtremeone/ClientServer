@@ -7,7 +7,7 @@ namespace API.Utilities.Handlers
         public static string Nik(string? nik)
         {
             // Cek jika input nik adalah null atau mengandung karakter non-digit
-            if (string.IsNullOrEmpty(nik))
+            if (nik is null)
             {
                 // Mengembalikan default NIK "111111" jika input nik adalah null atau kosong
                 return "111111";

@@ -119,5 +119,18 @@ namespace API.Services
         {
             return GetAllEmployeeDetail().SingleOrDefault(e => e.EmployeeGuid == guid);
         }
+
+        //public IEnumerable<GenderChartDataDto> GetGenderChartData()
+        //{
+        //    var genderChartData = _employeeRepository.GetAll()
+        //        .GroupBy(e => e.Gender)
+        //        .Select(group => new GenderChartDataDto
+        //        {
+        //            Gender = group.Key,
+        //            Count = group.Count()
+        //        });
+
+        //    return genderChartData;
+        //}
     }
 }

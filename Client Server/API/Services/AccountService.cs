@@ -23,8 +23,8 @@ namespace API.Services
         private readonly ITokenHandler _tokenHandler;
         private readonly BookingDbContext _dbContext;
 
-        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, 
-        IEducationRepository educationRepository, IUniversityRepository universityRepository, 
+        public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository,
+        IEducationRepository educationRepository, IUniversityRepository universityRepository,
         BookingDbContext dbContext, IEmailHandler emailHandler, ITokenHandler tokenHandler, IAccountRoleRepository accountRoleRepository)
         {
             _accountRepository = accountRepository;
@@ -235,13 +235,13 @@ namespace API.Services
             }
 
             var generatedToken = _tokenHandler.GenerateToken(claims);
-            if (generatedToken is null) 
+            if (generatedToken is null)
             {
                 return "-2";
             }
 
             return generatedToken;
-                                
+
         }
 
         public int Register(RegisterDto registerDto)

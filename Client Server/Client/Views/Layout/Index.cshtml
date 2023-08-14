@@ -1,0 +1,96 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokemon List</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/styles.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>Pokemon List</h1>
+        <div class="pokemon-container" id="pokemonContainer"></div>
+    </div>
+
+    @* <table>
+    <thead>
+    <tr>
+    <th>No</th>
+    <th>Nama</th>
+    <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="tbodySW"></tbody>
+    </table>*@
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pokemon Detail</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5 text-left">
+                            <img src="" alt="" id="gambar" style="max-width: 150px; border: 2px solid none;">
+                        </div>
+                        <div class="col-md-7 text-left">
+                            <p class="mb-1"><span id="name"></span></p>
+                            <p class="mb-1">Weight: <span id="weight"></span></p>
+                            <p class="mb-1">Height: <span id="height"></span></p>
+                            <p class="mb-1">Types <span id="types"></span></p>
+                            <p class="mb-1"> Abilities </p>
+                            <ul id="abilities"></ul>
+                        </div>
+                    </div>
+
+
+                    <p>Base Experience</p>
+                    <div class="progress mt-3" role="progressbar" aria-label="Base Experience" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="experience-progress" style="width: 0%;">
+                            <p class="progress-text mb-0" id="experience-text"></p>
+                        </div>
+                    </div>
+
+                    <p>Health Points (HP)</p>
+                    <div class="progress mt-3" role="progressbar" aria-label="Health Points" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="hp-progress" style="width: 0%;">
+                            <p class="progress-text mb-0" id="hp-text"></p>
+                        </div>
+                    </div>
+
+                    <p>Attack</p>
+                    <div class="progress mt-3" role="progressbar" aria-label="Attack" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" id="attack-progress" style="width: 0%;">
+                            <p class="progress-text mb-0"></p>
+                        </div>
+                    </div>
+
+                    <p>Defense</p>
+                    <div class="progress mt-3" role="progressbar" aria-label="Defense" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" id="defense-progress" style="width: 0%;">
+                            <p class="progress-text mb-0"></p>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="badges" id="types"></div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

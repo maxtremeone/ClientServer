@@ -6,12 +6,14 @@ using System.Net;
 using API.Utilities.Handlers;
 using System.Collections;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/rooms")]
-    [Authorize(Roles = "Manager")]
+    //[Authorize(Roles = "Manager")]
+    [EnableCors]
     public class RoomController : ControllerBase
     {
         private readonly RoomService _roomService;

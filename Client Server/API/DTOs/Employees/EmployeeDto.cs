@@ -7,13 +7,13 @@ namespace API.DTOs.Employees
     {
         public Guid Guid { get; set; }
         public string Nik { get; set; }
-        public string First_Name { get; set; }
-        public string Last_Name { get; set; }
-        public DateTime Birth_Date { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime BirthDate { get; set; }
         public GenderLevel Gender { get; set; }
-        public DateTime Hiring_Date { get; set; }
+        public DateTime HiringDate { get; set; }
         public string Email { get; set; }
-        public string Phone_Number { get; set; }
+        public string PhoneNumber { get; set; }
 
         public static implicit operator Employee(EmployeeDto employeeDto)
         {
@@ -21,13 +21,13 @@ namespace API.DTOs.Employees
             {
                 Guid = employeeDto.Guid,
                 Nik = employeeDto.Nik,
-                FirstName = employeeDto.First_Name,
-                LastName = employeeDto.Last_Name,
-                BirthDate = employeeDto.Birth_Date,
+                FirstName = employeeDto.FirstName,
+                LastName = employeeDto.LastName,
+                BirthDate = employeeDto.BirthDate,
                 Gender = employeeDto.Gender,
-                HiringDate = employeeDto.Hiring_Date,
+                HiringDate = employeeDto.HiringDate,
                 Email = employeeDto.Email,
-                PhoneNumber = employeeDto.Phone_Number,
+                PhoneNumber = employeeDto.PhoneNumber,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
             };
@@ -39,13 +39,13 @@ namespace API.DTOs.Employees
             {
                 Guid = employee.Guid,
                 Nik = employee.Nik,
-                First_Name = employee.FirstName,
-                Last_Name = employee.LastName,
-                Birth_Date = employee.BirthDate,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                BirthDate = employee.BirthDate,
                 Gender = employee.Gender,
-                Hiring_Date = employee.HiringDate,
+                HiringDate = employee.HiringDate,
                 Email = employee.Email,
-                Phone_Number = employee.PhoneNumber
+                PhoneNumber = employee.PhoneNumber
             };
         }
     }

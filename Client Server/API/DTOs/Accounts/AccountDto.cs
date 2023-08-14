@@ -1,5 +1,6 @@
-﻿using API.Models;
-using API.Utilities.Enums;
+﻿using API.DTOs.Universities;
+using API.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.DTOs.Accounts
 {
@@ -20,7 +21,6 @@ namespace API.DTOs.Accounts
                 Otp = accountDto.Otp,
                 IsUsed = accountDto.IsUsed,
                 ExpiredTime = accountDto.ExpiredTime,
-                CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
             };
         }
@@ -29,7 +29,6 @@ namespace API.DTOs.Accounts
         {
             return new AccountDto
             {
-
                 Guid = account.Guid,
                 Password = account.Password,
                 Otp = account.Otp,

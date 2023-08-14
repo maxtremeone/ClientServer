@@ -15,13 +15,13 @@ namespace API.Utilities.Validations.Employees
             //    .NotEmpty()
             //    .MaximumLength(6);
 
-            RuleFor(e => e.First_Name) 
+            RuleFor(e => e.FirstName) 
                 .NotEmpty();
 
-            RuleFor(e => e.Last_Name)
+            RuleFor(e => e.LastName)
                 .NotEmpty();
 
-            RuleFor(e => e.Birth_Date) 
+            RuleFor(e => e.BirthDate) 
                 .NotEmpty()
                 .LessThanOrEqualTo(DateTime.Now.AddYears(-10));
 
@@ -30,7 +30,7 @@ namespace API.Utilities.Validations.Employees
                 .NotNull()
                 .IsInEnum();
 
-            RuleFor(e => e.Hiring_Date)
+            RuleFor(e => e.HiringDate)
                 .NotEmpty();
 
             RuleFor(e => e.Email)
@@ -38,7 +38,7 @@ namespace API.Utilities.Validations.Employees
                 .EmailAddress().WithMessage("Email is not valid")
                 .Must(IsDuplicateValue).WithMessage("Email already exist");
 
-            RuleFor(e => e.Phone_Number)
+            RuleFor(e => e.PhoneNumber)
                 .NotEmpty()
                 .MaximumLength(20)
                 .Matches(@"^\+[0-9]").WithMessage("Phone number must start with +")

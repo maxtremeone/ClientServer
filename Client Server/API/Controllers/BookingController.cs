@@ -9,12 +9,14 @@ using System.Net;
 using API.DTOs.Rooms;
 using ClientServer.DTOs.Bookings;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/bookings")]
     //[Authorize]
+    [EnableCors]
     public class BookingController : ControllerBase
     {
         private readonly BookingService _bookingService;

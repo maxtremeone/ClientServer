@@ -8,12 +8,14 @@ using API.Utilities.Handlers;
 using System.Net;
 using API.DTOs.Rooms;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
-    [Authorize]
+    //[Authorize]
+    [EnableCors]
     public class AccountController : ControllerBase
     {
         private readonly AccountService _accountService;

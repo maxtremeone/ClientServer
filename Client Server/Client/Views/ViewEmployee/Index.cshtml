@@ -1,0 +1,127 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_LayoutAdmin";
+}
+<h1>Data Tables <span><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInsert"><i class="fa-solid fa-plus"></i></button></span></h1>
+<table class="table" id="tabelEmp">
+    <thead>
+        <tr class="tableRow">
+            <th>No</th>
+            <th>Nik</th>
+            <th>Full Name</th>
+            <th>Birth Date</th>
+            <th>Gender</th>
+            <th>Hiring Date</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+			<th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="tbodyEmp"></tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="modalInsert" tabindex="-1" aria-labelledby="modalInsertLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalInsertLabel">Create Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="insertForm">
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="birthDate" class="form-label">Birth Date</label>
+                        <input type="date" class="form-control" id="birthDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender" required>
+                            <option value="0">Female</option>
+                            <option value="1">Male</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hiringDate" class="form-label">Hiring Date</label>
+                        <input type="date" class="form-control" id="hiringDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="phone" pattern="[0-9]{10,}" required>
+                        <small class="form-text text-muted">Phone number must be at least 10 digits long and start with +.</small>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="Insert()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="modal" id="modalUpdateEmployee" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="guidUpd" value="">
+                <input type="hidden" class="form-control" id="nikUpd" value="">
+                <div class="mb-3">
+                    <label for="First_Name" class="form-label"> First Name</label>
+                    <input type="text" class="form control" id="firstNameUpd" placeholder="First Name">
+                </div>
+                <div class="mb-3">
+                    <label for="Last_Name" class="form-label"> Last Name</label>
+                    <input type="text" class="form control" id="lastNameUpd" placeholder="Last Name">
+                </div>
+                <div class="mb-3">
+                    <label for="Birth_Date" class="form-label"> Birth Date</label>
+                    <input type="datetime-local" class="form control" id="birthDateUpd" placeholder="Birth Date">
+                </div>
+                <div class="mb-3">
+                    <label for="Gender" class="col-form-label">Gender:</label>
+                    <select class="form-control" id="gender" required>
+                        <option value="1">Male</option>
+                        <option value="0">Female</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="Hiring_Date" class="form-label"> Hiring Date</label>
+                    <input type="datetime-local" class="form control" id="hiringDateUpd" placeholder="Hiring Date">
+                </div>
+                <div class="mb-3">
+                    <label for="Email" class="form-label"> Email</label>
+                    <input type="email" class="form control" id="emailUpd" placeholder="Email">
+                </div>
+                <div class="mb-3">
+                    <label for="Phone_Number" class="form-label"> Phone Number</label>
+                    <input type="tel" class="form control" id="phoneNumberUpd" placeholder="Phone Number">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="UpdateEmployee()" class="btn btn-primary d-inline-block" data-bs-dismiss="modal">Update Employee</button>
+                <button type="button" class="btn btn-secondary d-inline-block" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>*@

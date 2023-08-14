@@ -16,7 +16,7 @@ namespace API.Utilities.Validations.Accounts
 
             RuleFor(a => a.Password)
                 .NotEmpty()
-                .Matches(@"^(?=.*[0-9])(?=.*[A-Z]).{8,}$").WithMessage("Password invalid! Passwords must have at least 1 upper case and 1 number"); 
+                .Matches(@"^(?=.*[0-9])(?=.*[A-Z]).{8,}$").WithMessage("Password invalid! Passwords must have at least 1 upper case and 1 number");
 
             RuleFor(a => a.Otp)
                 .NotEmpty();
